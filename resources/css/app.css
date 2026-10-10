@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --color-ink: #07111f;
+    --color-panel: #0d1b2a;
+    --color-mint: #36e1bd;
+}
+
+@layer base { body { @apply bg-[#07111f] text-slate-100 antialiased; } }
+@layer components {
+ .container-app { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+ .glass { @apply border border-white/10 bg-white/[0.055] shadow-2xl shadow-black/20 backdrop-blur; }
+ .card { @apply rounded-2xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-black/20 backdrop-blur; }
+ .btn-primary { @apply inline-flex items-center justify-center rounded-xl bg-emerald-400 px-5 py-3 font-bold text-slate-950 transition hover:bg-emerald-300 disabled:opacity-50; }
+ .btn-secondary { @apply inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/5 px-5 py-3 font-semibold text-white transition hover:bg-white/10; }
+ .input { @apply w-full rounded-xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-emerald-400; }
+ .label { @apply mb-2 block text-sm font-semibold text-slate-300; }
+ .badge { @apply inline-flex rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-300; }
+ .error { @apply mt-1 text-sm text-rose-400; }
+}
