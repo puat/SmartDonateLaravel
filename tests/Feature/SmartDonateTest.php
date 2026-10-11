@@ -145,8 +145,15 @@ test('TC-09 dana milestone terverifikasi dapat dicairkan sekali', function () {
     $admin = sdUser('ADMIN');
     $campaign = sdCampaign();
     $m = Milestone::create(['campaign_id' => $campaign->id, 'title' => 'Tahap 1', 'description' => 'Tahap pertama', 'percentage' => 30, 'amount' => 30000000, 'sequence' => 1, 'status' => 'TERVERIFIKASI']);
+    $nextMilestone = Milestone::create(['campaign_id' => $campaign->id, 'title' => 'Tahap 2', 'description' => 'Tahap kedua', 'percentage' => 40, 'amount' => 20000000, 'sequence' => 2, 'status' => 'TERKUNCI']);
+    $lastMilestone = Milestone::create(['campaign_id' => $campaign->id, 'title' => 'Tahap 3', 'description' => 'Tahap ketiga', 'percentage' => 30, 'amount' => 20000000, 'sequence' => 3, 'status' => 'TERKUNCI']);
     $release = app(FundReleaseService::class)->release($m, $admin);
-    expect($release->status)->toBe('DICAIRKAN')->and($campaign->fresh()->released_amount)->toBe(30000000)->and($campaign->fresh()->escrow_amount)->toBe(20000000);
+    expect($release->status)->toBe('DICAIRKAN')
+        ->and($campaign->fresh()->released_amount)->toBe(30000000)
+        ->and($campaign->fresh()->escrow_amount)->toBe(20000000)
+        ->and($nextMilestone->fresh()->status)->toBe('TERBUKA')
+        ->and($lastMilestone->fresh()->status)->toBe('TERKUNCI');
+    $this->assertDatabaseHas('audit_logs', ['record_id' => $nextMilestone->id, 'module' => 'MILESTONE', 'action' => 'DIBUKA']);
 });
 
 test('TC-10 pencairan duplikat dicegah', function () {

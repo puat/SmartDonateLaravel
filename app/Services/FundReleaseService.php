@@ -33,6 +33,22 @@ class FundReleaseService
             $milestone->update(['status' => 'DICAIRKAN', 'released_at' => now()]);
             app(AuditService::class)->record('DICAIRKAN', 'MILESTONE', $milestone->id, "Dana milestone {$milestone->title} dicairkan.");
 
+            $nextMilestone = $campaign->milestones()
+                ->where('sequence', '>', $milestone->sequence)
+                ->orderBy('sequence')
+                ->lockForUpdate()
+                ->first();
+
+            if ($nextMilestone?->status === 'TERKUNCI') {
+                $nextMilestone->update(['status' => 'TERBUKA']);
+                app(AuditService::class)->record(
+                    'DIBUKA',
+                    'MILESTONE',
+                    $nextMilestone->id,
+                    "Milestone {$nextMilestone->title} dibuka setelah tahap sebelumnya dicairkan."
+                );
+            }
+
             return $release;
         });
     }
